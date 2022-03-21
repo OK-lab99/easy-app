@@ -1,0 +1,35 @@
+version: '3'
+ 
+services:
+  db:
+    image: postgres
+    ports:
+      - "5432:5432"
+    environment:
+    - POSTGRES_USER=postgres
+    - POSTGRES_PASSWORD=postgres
+    - POSTGRES_DB=postgres
+
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./api:/app/api
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+  
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./client:/app/client
+      - /app/client/node_modules
+    ports:
+      - "8080:80"
+  
+volumes:
+  pg_data:
